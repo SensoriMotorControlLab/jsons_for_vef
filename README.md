@@ -1,2 +1,2 @@
-# jsons_for_vef
-A GUI for generating JSON files for SMCL's Visuomotor Experiment Framework
+# VEF_JSON_Config
+Build and edit settings files for the Visuomotor Experiment Framework

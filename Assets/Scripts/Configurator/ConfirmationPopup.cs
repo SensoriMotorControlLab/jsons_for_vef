@@ -44,11 +44,10 @@ public class ConfirmationPopup : MonoBehaviour
             {
                 // Disable cancel button and move confirm to center
                 CancelButton.SetActive(false);
-                ConfirmButton.GetComponent<RectTransform>().position = new Vector3(
+                ConfirmButton.transform.position = new Vector3(
                     ConfirmPosition.x + 45f,
                     ConfirmButton.transform.position.y,
-                    ConfirmButton.transform.position.z
-                    );
+                    ConfirmButton.transform.position.z);
             }
         }
         else

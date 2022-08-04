@@ -26,7 +26,7 @@ public class ConfigurationUIManager : MonoBehaviour
 
     // When true, the user has made a modification to the JSON without saving.
     // We use this to let the user know in the UI they have unsaved changes.
-    private bool dirty;
+    private bool dirty = false;
 
     // Reserved filename for JSON file that contains information for type checking
     public const string MASTER_JSON_FILENAME = "experiment_parameters.json";
@@ -41,6 +41,8 @@ public class ConfigurationUIManager : MonoBehaviour
 
     // Tracks whether a file has been opened or not
     public bool fileOpen = false;
+
+    public PopUp PopUpManager;
 
     /// <summary>
     /// Public accessor for "dirty" variable. When the variable is modified
@@ -87,7 +89,7 @@ public class ConfigurationUIManager : MonoBehaviour
         // Assign callback for file save dialog prompt
         FileSaveDialog.GetComponent<FileSavePopup>().Callback += SaveAs;
 
-        
+
 
         string path = Application.dataPath + "/StreamingAssets/Parameters/experiment_parameters.json";
         if (File.Exists(path))
@@ -123,6 +125,8 @@ public class ConfigurationUIManager : MonoBehaviour
         }
 
         GetFiles();
+        //Set text to let the user know what to do (The text from the first option isn't visible)
+        FileDropdown.GetComponentInChildren<Text>().text = "Click here to open a file.";
     }
 
     /// <summary>
@@ -135,8 +139,12 @@ public class ConfigurationUIManager : MonoBehaviour
             file => (file.Name != MASTER_JSON_FILENAME && file.Name != EXPERIMENT_PARAMETERS)).ToArray();
 
         List<Dropdown.OptionData> fileOptions = new List<Dropdown.OptionData>();
-        //Add default option because otherwise first option isn't clickable
-        fileOptions.Add(new Dropdown.OptionData("Click here to open a file.")); 
+
+        if (!fileOpen)
+        {
+            //Add default option because otherwise first option isn't clickable
+            fileOptions.Add(new Dropdown.OptionData("Click here to open a file."));
+        }
         foreach (FileInfo f in files)
         {
             fileOptions.Add(new Dropdown.OptionData(f.Name));
@@ -144,9 +152,6 @@ public class ConfigurationUIManager : MonoBehaviour
 
         FileDropdown.GetComponent<Dropdown>().ClearOptions();
         FileDropdown.GetComponent<Dropdown>().options.AddRange(fileOptions);
-
-        //Set text to let the user know what to do (The text from the first option isn't visible)
-        FileDropdown.GetComponentInChildren<Text>().text = "Click here to open a file.";
     }
 
     // Update is called once per frame
@@ -174,6 +179,8 @@ public class ConfigurationUIManager : MonoBehaviour
         string json = MiniJSON.Json.Serialize(ExpContainer.Data);
         File.WriteAllText(fileName, json);
         currentFile = fileName;
+
+        PopUpManager.ShowPopup("File saved as " + fileName.Remove(0, Application.dataPath.Length) + ".", PopUp.MessageType.Positive);
     }
 
     /// <summary>
@@ -181,6 +188,12 @@ public class ConfigurationUIManager : MonoBehaviour
     /// </summary>
     void Save()
     {
+        if (currentFile == null)
+        {
+            PopUpManager.ShowPopup("No file selected.", PopUp.MessageType.Negative);
+            return;
+        }
+
         if (dirty)
         {
             SaveFile(currentFile);
@@ -201,9 +214,11 @@ public class ConfigurationUIManager : MonoBehaviour
             GetFiles();
 
             Dirty = false;
-            FileDropdown.GetComponent<Dropdown>().value = FileDropdown.GetComponent<Dropdown>().options.FindIndex(
-                o => o.text == fileName
-            );
+            FileDropdown.GetComponent<Dropdown>().value =
+                FileDropdown.GetComponent<Dropdown>().options.FindIndex(
+                o => o.text == fileName);
+
+            // OpenFile(Application.dataPath + "/StreamingAssets/" + fileName);
         }
     }
 
@@ -232,15 +247,16 @@ public class ConfigurationUIManager : MonoBehaviour
             index--;
             FileDropdown.GetComponent<Dropdown>().options.RemoveAt(0); //remove default option
             FileDropdown.GetComponent<Dropdown>().value--; //fixes visual bug where it looked like the next file in list is selected
+            return;
         }
- 
+
         currentFile = files[index].FullName;
-        
+
 
         if (dirty)
         {
             ConfirmationPopup.GetComponent<ConfirmationPopup>().ShowPopup(
-                "You have unsaved changes. Are you sure you want to continue?", OnOpenFileConfirm);
+                "You have unsaved changes. Are you sure you want to open a different file?", OnOpenFileConfirm);
         }
         else
         {
@@ -274,6 +290,7 @@ public class ConfigurationUIManager : MonoBehaviour
         HardReset();
 
         tipManager.SetTip(TipManager.TipType.OpenFile);
+        PopUpManager.ShowPopup(fileName.Remove(0, Application.dataPath.Length) + " opened.", PopUp.MessageType.Positive);
     }
 
     public void LoadFile(Dictionary<string, object> fileParameters)
@@ -307,7 +324,7 @@ public class ConfigurationUIManager : MonoBehaviour
         if (dirty)
         {
             ConfirmationPopup.GetComponent<ConfirmationPopup>().ShowPopup(
-                "You have unsaved changes. Are you sure you want to continue?", OnNewFileConfirm);
+                "You have unsaved changes. Are you sure you want to open a new file?", OnNewFileConfirm);
         }
         else
         {
@@ -324,6 +341,8 @@ public class ConfigurationUIManager : MonoBehaviour
     /// </summary>
     private void NewFile()
     {
+        currentFile = null;
+
         CreateParameterList(ParametersDropdown.value);
 
         ParametersDialog.SetActive(false);
@@ -376,10 +395,25 @@ public class ConfigurationUIManager : MonoBehaviour
 
         HardReset();
 
-        FileDropdown.GetComponent<Dropdown>().value = 0;
+        /*        GetFiles();
+
+                List<Dropdown.OptionData> fileOptions = new List<Dropdown.OptionData>();
+                //Add default option because otherwise first option isn't clickable
+                fileOptions.Add(new Dropdown.OptionData("New File"));
+                foreach (FileInfo f in files)
+                {
+                    fileOptions.Add(new Dropdown.OptionData(f.Name));
+                }
+
+                FileDropdown.GetComponent<Dropdown>().ClearOptions();
+                FileDropdown.GetComponent<Dropdown>().options.AddRange(fileOptions);
+
+                FileDropdown.GetComponent<Dropdown>().value = 0;*/
 
         //Clear dropdown text in case a file was previously open
-        FileDropdown.GetComponentInChildren<Text>().text = "";
+        FileDropdown.GetComponentInChildren<Text>().text = "New File";
+
+        PopUpManager.ShowPopup("New file created.", PopUp.MessageType.Positive);
     }
 
     /// <summary>

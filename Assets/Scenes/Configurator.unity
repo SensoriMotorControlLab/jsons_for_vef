@@ -3382,6 +3382,7 @@ MonoBehaviour:
   ParametersDropdown: {fileID: 1673683941}
   tipManager: {fileID: 1978573359}
   fileOpen: 0
+  PopUpManager: {fileID: 776381632}
   CurrentSelectedBlock: 0
   PropertyNameText: {fileID: 0}
   PropertyValueText: {fileID: 0}
@@ -7250,7 +7251,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Option A
+  m_Text: 
 --- !u!222 &961954786
 CanvasRenderer:
   m_ObjectHideFlags: 0

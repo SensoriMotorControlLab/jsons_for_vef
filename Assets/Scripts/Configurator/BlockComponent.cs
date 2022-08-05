@@ -3,6 +3,14 @@ using UnityEngine.EventSystems;
 
 public class BlockComponent : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
+    /*
+     * This script is attached to each individual block/notch pair in BlockView.
+     * 
+     * This handles the detection of beginning a drag, dragging, and ending a drag.
+     * 
+     */
+
+
     public ConfigurationBlockManager BlockController;
     public int BlockID;
     public GameObject Notch;

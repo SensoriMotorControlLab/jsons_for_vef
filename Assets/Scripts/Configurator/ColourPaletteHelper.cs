@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public static class ColourPaletteHelper
 {
+    //This is used by ConfigurationBlockManager to set the colours of different blocks
+
     /// <summary>
     /// Given a Color,
     /// this method sets the normal, selected, disabled, pressed, highlighted colours of a colour block. 

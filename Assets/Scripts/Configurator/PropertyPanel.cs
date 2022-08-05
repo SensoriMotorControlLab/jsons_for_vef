@@ -8,6 +8,11 @@ using System.Text.RegularExpressions;
 
 public class PropertyPanel : MonoBehaviour
 {
+    //Attached to PropertyTab
+    //Allows for adding, updating, and removing global properties in jsons
+    //i.e. all properties that are not "per_blocK"
+
+
     public string PropertyName, PropertyValue;
 
     public ConfigurationUIManager uiManager;
@@ -34,12 +39,13 @@ public class PropertyPanel : MonoBehaviour
         Populate();
     }
 
+    //Saves or updates a property
     public void SaveProperty()
     {
         UndoRedo.instance.Backup();
 
-        PropertyName = Regex.Replace(NameInput.text, @"\s+", ""); //Replaces all(+) space characters (\s) with empty("");
-        PropertyValue = Regex.Replace(ValueInput.text, @"\s+", "");
+        PropertyName = Regex.Replace(NameInput.text, @"\s+", ""); //Replaces all(+) space characters(\s) with empty("");
+        PropertyValue = Regex.Replace(ValueInput.text, @"\s+", ""); //...for property name and property value
 
         List<string> tempList = new List<string>();
         tempList.AddRange(PropertyValue.Split(','));
@@ -69,6 +75,7 @@ public class PropertyPanel : MonoBehaviour
         Populate();
     }
 
+    //Populates the text box with all global properties in the current file 
     public void Populate()
     {
         PropertyInfoText.GetComponent<TextMeshProUGUI>().text = "\nProperties:\n\n";
@@ -97,6 +104,7 @@ public class PropertyPanel : MonoBehaviour
         ValueInput.text = string.Join(",", uiManager.ExpContainer.Data[selectedParameter] as List<object>);
     }
 
+    //Removes a property from the json
     public void DeleteProperty()
     {
         PropertyName = NameInput.text;

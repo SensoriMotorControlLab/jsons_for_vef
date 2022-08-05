@@ -7,6 +7,9 @@ using UnityEngine.Events;
 
 public class ClickableInfoTxt : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    //This script is attached to BlockInfoText
+    //Allows the list of properties text to be clickable and work with BlockPanel.OnClickOption
+
     public GameObject InfoText;
     //public BlockPanel bp;
 

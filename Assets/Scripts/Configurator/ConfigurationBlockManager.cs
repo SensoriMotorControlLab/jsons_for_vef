@@ -36,6 +36,10 @@ public class ConfigurationBlockManager : MonoBehaviour
 
     public PopUp PopUpManager;
 
+    //Attached to BlockView 
+    // Handles setting the colour of blocks, block dragging logic, selecting blocks and notches, 
+    // adding, removing, copying, pasting blocks. 
+
     public enum BlockType
     {
         Selected,
@@ -45,6 +49,7 @@ public class ConfigurationBlockManager : MonoBehaviour
         Clamped
     }
 
+    //Dictionary of colours for each blocktype
     readonly static Dictionary<BlockType, ColorBlock> BlockColours = new Dictionary<BlockType, ColorBlock>()
     {
         {BlockType.Selected, ColourPaletteHelper.SetColourPalette(Color.yellow, 1)},
@@ -180,7 +185,7 @@ public class ConfigurationBlockManager : MonoBehaviour
 
     /// <summary>
     /// Sets colour of block depending on if its selected, and per block type. 
-    /// Sets SelectedBlockTest based on which blocks are selected.
+    /// Sets SelectedBlockText based on which blocks are selected.
     /// </summary>
     private void UpdateBlockButtons()
     {
@@ -219,6 +224,9 @@ public class ConfigurationBlockManager : MonoBehaviour
         SelectedBlockText.GetComponent<Text>().text = s;
     }
 
+    /// <summary>
+    /// Sets colour of notch depending on if its selected
+    /// </summary>
     private void UpdateNotchButtons()
     {
         if (SelectedBlocks.Count == 0)

@@ -24,7 +24,7 @@ public class Tooltip : MonoBehaviour
 
     public void SetText(string text)
     {
-        // Note: Content is null for reason. This line is a workaround to find the text object at runtime.
+        // Note: Content is null for some reason. This line is a workaround to find the text object at runtime.
         GetComponentInChildren<TextMeshProUGUI>().text = text;
         //content.text = text;
     }
